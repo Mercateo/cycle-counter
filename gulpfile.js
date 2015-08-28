@@ -1,15 +1,13 @@
 var babelify = require('babelify');
 var browserSync = require('browser-sync');
 var browserify = require('browserify');
-var htmlInjector = require('bs-html-injector');
-var flo = require('fb-flo');
 var gulp = require('gulp');
 var less = require('gulp-less');
 var sourcemaps = require('gulp-sourcemaps');
 var gutil = require('gulp-util');
 var buffer = require('vinyl-buffer');
 var source = require('vinyl-source-stream');
-var uglify = require('gulp-uglify');
+//var uglify = require('gulp-uglify');
 var assign = require('lodash.assign');
 var watchify = require('watchify');
 
@@ -53,10 +51,6 @@ function buildJs() {
 gulp.task('build', [ 'build-js', 'build-css', 'build-html' ]);
 
 gulp.task('serve', [ 'build' ], function() {
-  browserSync.use(htmlInjector, {
-    files: 'dist/*.html'
-  });
-
   browserSync.init({
     server: {
       notify: false,
@@ -64,20 +58,12 @@ gulp.task('serve', [ 'build' ], function() {
     },
     open: false
   });
-
-  flo('dist', {
-    port: 8888,
-    host: 'localhost',
-    glob: [
-      'main.js'
-    ]
-  });
 });
 
 gulp.task('watch', [ 'serve' ], function() {
-  gulp.watch([ 'src/**/*.html' ], [ 'build-html' ]);
+  gulp.watch([ 'src/**/*.html' ], [ 'build-html', browserSync.reload ]);
   gulp.watch([ 'src/**/*.less' ], [ 'build-css' ]);
-  // don't watch js files, because we use watchify
+  gulp.watch([ 'src/**/*.js' ], [ 'build-js', browserSync.reload ]);
 });
 
 gulp.task('default', [ 'watch' ]);

@@ -8,14 +8,10 @@ This example features
 - configurable widgets
 - multiple instances of a single widget
 
-
-This template is loosely based on [this one](https://github.com/Mercateo/cycle-live-edit-starter).
-
 ## Install
 
 1. Clone this repository.
 2. Install all dependencies with `$ npm install`.
-3. Install the [fb-flo Chrome extension](https://github.com/facebook/fb-flo#2-install-the-chrome-extension) and [activate fb-flo](https://github.com/facebook/fb-flo#3-activate-fb-flo), if you want live edit features.
 
 
 ## Usage

@@ -1,32 +1,48 @@
 /** @jsx hJSX */
-import Cycle, { Rx } from '@cycle/core';
+import { run, Rx } from '@cycle/core';
 import { hJSX, makeDOMDriver } from '@cycle/dom';
-import manualCounter from './manual-counter';
 import automaticCounter from './automatic-counter';
+import configurableAutomaticCounter from './configurable-automatic-counter';
 
-function main(responses) {
-  let state$ = responses.reload$;
+function main({ DOM }) {
+  let firstAutomaticCounterProps$ = Rx.Observable.just({
+    interval: 1000,
+    initial: 0
+  });
+  let firstAutomaticCounter = automaticCounter({ DOM, props$: firstAutomaticCounterProps$ });
+
+  let secondAutomaticCounterProps$ = Rx.Observable.just({
+    interval: 2000,
+    initial: 0
+  });
+  let secondAutomaticCounter = automaticCounter({ DOM, props$: secondAutomaticCounterProps$ });
+
+  let firstConfigurableAutomaticCounterProps$ = Rx.Observable.just({
+    interval: 2000,
+    initial: 0
+  });
+  let firstConfigurableAutomaticCounter = configurableAutomaticCounter({ DOM, props$: firstConfigurableAutomaticCounterProps$ });
 
   return {
-    DOM: state$.map(() =>
+    DOM: Rx.Observable.combineLatest(
+      firstAutomaticCounter.DOM, secondAutomaticCounter.DOM, firstConfigurableAutomaticCounter.DOM,
+      (firstAutomaticCounterVTree, secondAutomaticCounterVTree, firstConfigurableAutomaticCounterVTree) =>
       <div>
-        <h1>Counter Example</h1>
-        <p>This is an automatic counter (1s steps):</p>
-        {automaticCounter(responses).DOM}
-        <p>This is an automatic counter (2s steps):</p>
-        {automaticCounter(responses, { interval: 2000 }).DOM}
-        <p>This is a manual counter:</p>
-        {manualCounter(responses, { name: 'first' }).DOM}
-        <p>This is another manual counter:</p>
-        {manualCounter(responses, { name: 'second' }).DOM}
+        <h1>Counter Examples</h1>
+
+        <h2>Automatic Counters</h2>
+        <p>This is an automatic counter (interval: 1s): {firstAutomaticCounterVTree}</p>
+        <p>This is an automatic counter (interval: 2s): {secondAutomaticCounterVTree}</p>
+
+        <h2>Configurable Automatic Counters</h2>
+        {firstConfigurableAutomaticCounterVTree}
       </div>
     )
   };
 }
 
 let drivers = {
-  DOM: makeDOMDriver('#app'),
-  reload$: () => Rx.Observable.fromEvent(window, 'fb-flo-reload').startWith(null)
+  DOM: makeDOMDriver('#app')
 };
 
-Cycle.run(main, drivers);
+run(main, drivers);

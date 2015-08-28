@@ -1,14 +1,23 @@
-import intent from './intent';
-import model from './model';
-import view from './view';
+/** @jsx hJSX */
+import { Rx } from '@cycle/core';
+import { hJSX, h } from '@cycle/dom';
 
-const defaultConfig = {
-  interval: 1000
-};
+export default function automaticCounter({ DOM, props$ }, name = '') {
+  // props
+  // value
+  let initialValue$ = props$.map(props => props.initial).first();
+  let intervalValue$ = props$.map(props => Rx.Observable.interval(props.interval));
+  let value$ = initialValue$.concat(intervalValue$);
 
-export default function main(responses, config) {
-  config = Object.assign({}, defaultConfig, config);
+  // vtree
+  let vtree$ = Rx.Observable.combineLatest(props$, value$, (props, value) =>
+    <span>
+      {value}
+    </span>
+  );
+
   return {
-    DOM: view(model(intent(responses.DOM, config), config), config)
-  };
+    DOM: vtree$,
+    value$
+  }
 }
