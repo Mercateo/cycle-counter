@@ -9,7 +9,7 @@ export default function configurableAutomaticCounter({ DOM, props$ }, name = '')
 
   // TODO: How can I push newInterval$ into props$?
   let newInterval$ = DOM.get(`.configurable-automatic-counter${name} .slider`, 'input')
-    .map(ev => { ev.target.value });
+    .map(ev => ev.target.value);
 
   // value
   let value$ = myAutomaticCounter.value$;
