@@ -5,23 +5,23 @@ import automaticCounter from './automatic-counter';
 import configurableAutomaticCounter from './configurable-automatic-counter';
 
 function main({ DOM }) {
-  let firstAutomaticCounterProps$ = Rx.Observable.just({
-    interval: 1000,
-    initial: 0
+  let firstAutomaticCounter = automaticCounter({
+    DOM,
+    initial$: Rx.Observable.just(0),
+    interval$: Rx.Observable.just(1000)
   });
-  let firstAutomaticCounter = automaticCounter({ DOM, props$: firstAutomaticCounterProps$ });
 
-  let secondAutomaticCounterProps$ = Rx.Observable.just({
-    interval: 2000,
-    initial: 0
+  let secondAutomaticCounter = automaticCounter({
+    DOM,
+    initial$: Rx.Observable.just(0),
+    interval$: Rx.Observable.just(2000)
   });
-  let secondAutomaticCounter = automaticCounter({ DOM, props$: secondAutomaticCounterProps$ });
 
-  let firstConfigurableAutomaticCounterProps$ = Rx.Observable.just({
-    interval: 2000,
-    initial: 0
+  let firstConfigurableAutomaticCounter = configurableAutomaticCounter({
+    DOM,
+    initial$: Rx.Observable.just(50),
+    interval$: Rx.Observable.just(2000)
   });
-  let firstConfigurableAutomaticCounter = configurableAutomaticCounter({ DOM, props$: firstConfigurableAutomaticCounterProps$ });
 
   return {
     DOM: Rx.Observable.combineLatest(
