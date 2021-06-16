@@ -1,3 +1,5 @@
+This project is unmantained, deprecated and goes into archive with followup removal in 2 years.
+
 # cycle-counter
 
 > A small example to show how widgets could be structured inside a Cycle.js application.
